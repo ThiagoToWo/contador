@@ -1,0 +1,72 @@
+<style>
+body {
+	background: #dff;
+	margin-left: 20px;
+}
+
+button {
+	margin-top: 10px;
+}
+
+pre {
+	padding-left: 10px;
+	font-size: 1.5em;
+}
+</style>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contador de Letras</title>
+<h1>Contador de Letras</h1>
+<textarea rows=10 cols=50></textarea><br>
+<button>Processar</button>
+<pre>
+
+<script>
+const textarea = document.querySelector("textarea");
+const button = document.querySelector("button");
+const pre = document.querySelector("pre");
+
+button.onclick = function() {
+	let texto = textarea.value;
+	texto += "*";
+	const freq = [];
+	const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	let ch;
+	let i = 0;
+
+	do {
+		ch = texto.substr(i, 1).toUpperCase();			
+		k = letras.indexOf(ch);
+		console.log(ch, k)
+
+		if (freq[k] == undefined) {
+			freq[k] = 1;
+		} else {
+			freq[k]++;
+		}
+		i++;
+	} while (ch != "*");
+
+	pre.innerText = `char.\tfreq.\thist.\n`;
+
+	for (let i = 0; i < 26; i++) {
+		if (freq[i] != undefined) {
+			pre.innerText += `${letras[i]}\t${freq[i]}\t`;
+		} else {
+			pre.innerText += `${letras[i]}\t0\t`;
+		}
+
+		for (let j = 0; j < freq[i]; j++) {
+			pre.innerText += "*";
+		}
+		
+		pre.innerText += `\n`;
+	}
+}
+
+function temPontuacao(p) {
+	const ul = p[p.length - 1];
+	return ul == "," || ul == "." || ul == ";" || ul == ":" || ul == "!" || ul == "?";
+}
+</script>
