@@ -1,0 +1,85 @@
+<style>
+body {
+	background: #dff;
+	margin-left: 20px;
+}
+
+button {
+	margin-top: 10px;
+}
+
+pre {
+	background: #ffd;
+	padding-left: 10px;
+	font-size: 1.5em;
+}
+</style>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contador de Frases</title>
+<h1>Contador de Frases</h1>
+<textarea rows=10 cols=50></textarea><br>
+<button>Processar</button>
+<pre>
+
+<script>
+const textarea = document.querySelector("textarea");
+const button = document.querySelector("button");
+const pre = document.querySelector("pre");
+
+button.onclick = function() {
+	let texto = textarea.value;
+	texto += " ";
+	const freq = [];
+	let palavra;
+	let k;
+	let comp = 0;
+	let soma = 0;
+	let peso = 0;
+
+	do {
+		k = texto.indexOf(" ");
+		palavra = texto.substr(0, k);
+		comp++;		
+		console.log(palavra)
+		
+		if (temPontuacao(palavra)) {
+			if (freq[comp] == undefined) {
+				freq[comp] = 1;
+			} else {
+				freq[comp]++;
+			}
+
+			comp = 0;			
+		}		
+
+		texto = texto.substr(k+1);
+	} while (palavra != "");
+
+	pre.innerText = `comp.\tfreq.\thist.\n`;
+
+	for (let i = 1; i < freq.length; i++) {
+		if (freq[i] != undefined) {
+			soma += i * freq[i];
+			peso += freq[i];
+			pre.innerText += `${i}\t${freq[i]}\t`;
+		} else {
+			pre.innerText += `${i}\t0\t`;
+		}
+
+		for (let j = 0; j < freq[i]; j++) {
+			pre.innerText += "*";
+		}
+		
+		pre.innerText += `\n`;
+	}
+
+	pre.innerText += `comp. médio = ${(soma / peso).toFixed(1)}`;
+}
+
+function temPontuacao(p) {
+	const ul = p[p.length - 1];
+	return ul == "," || ul == "." || ul == ";" || ul == ":" || ul == "!" || ul == "?";
+}
+</script>

@@ -1,0 +1,163 @@
+<style>
+body {
+	background: #dff;
+	margin-left: 20px;
+}
+
+button {
+	margin-top: 10px;
+}
+
+pre {
+	background: #ffd;
+	padding-left: 10px;
+	font-size: 1.3em;
+}
+</style>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contador Geral</title>
+
+<h1>Contador Geral</h1>
+<textarea rows=10 cols=50></textarea><br>
+<button>Processar</button>
+
+
+
+<h2>Frequência das letras:</h2>
+<pre id="prLetra"></pre>
+
+<h2>Comprimento das palavras:</h2>
+<pre id="prPalavra"></pre>
+
+<h2>Comprimento das frases:</h2>
+<pre id="prFrase"></pre>
+
+<script>
+const textarea = document.querySelector("textarea");
+const button = document.querySelector("button");
+const prePalavra = document.querySelector("#prPalavra");
+const preFrase = document.querySelector("#prFrase");
+const preLetra = document.querySelector("#prLetra");
+
+button.onclick = function() {
+	let texto = textarea.value.toUpperCase();
+	texto += "*";
+	const freqPalavra = [];
+	const freqFrase = [];
+	const freqLetra = [];
+	const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	let letra;
+	let compFrase = 1;
+	let compPalavra = 0;
+	let somaFrase = 0;
+	let pesoFrase = 0;
+	let somaPalavra = 0;
+	let pesoPalavra = 0;
+	let k;
+
+	do {
+		letra = texto.substr(0, 1);			
+		k = letras.indexOf(letra);
+		compPalavra++;
+		console.log("letra:", letra, "compPalavra:", compPalavra, "compFrase:", compFrase)
+
+		if (freqLetra[k] == undefined) {
+			freqLetra[k] = 1;
+		} else {
+			freqLetra[k]++;
+		}
+
+		if (temPontuacao(letra)) {
+			compPalavra--;
+
+			if (freqFrase[compFrase] == undefined) {
+				freqFrase[compFrase] = 1;
+			} else {
+				freqFrase[compFrase]++;
+			}			
+			
+			compFrase = 0;
+		}	
+
+		if (letra == " " || texto == "*") {
+			compPalavra--;
+
+			if (freqPalavra[compPalavra] == undefined) {
+				freqPalavra[compPalavra] = 1;
+			} else {
+				freqPalavra[compPalavra]++;
+			}
+			
+			compFrase++;
+			compPalavra = 0;			
+		} 
+
+		texto = texto.substr(1);
+	} while (letra != "*");
+
+	// Imprime sobre as letras
+	preLetra.innerText = `char.\tfreq.\thist. (1:4)\n`;
+
+	for (let i = 0; i < 26; i++) {
+		if (freqLetra[i] != undefined) {
+			preLetra.innerText += `${letras[i]}\t${freqLetra[i]}\t`;
+		} else {
+			preLetra.innerText += `${letras[i]}\t0\t`;
+		}
+
+		for (let j = 0; j < freqLetra[i]; j += 4) {
+			preLetra.innerText += "*";
+		}
+		
+		preLetra.innerText += `\n`;
+	}
+
+	// Imprime sobre as palavras
+	prePalavra.innerText = `comp.\tfreq.\thist. (1:2)\n`;
+
+	for (let i = 1; i < freqPalavra.length; i++) {
+		if (freqPalavra[i] != undefined) {
+			somaPalavra += i * freqPalavra[i];
+			pesoPalavra += freqPalavra[i];
+			prePalavra.innerText += `${i}\t${freqPalavra[i]}\t`;
+		} else {
+			prePalavra.innerText += `${i}\t0\t`;
+		}
+
+		for (let j = 0; j < freqPalavra[i]; j += 2) {
+			prePalavra.innerText += "*";
+		}
+		
+		prePalavra.innerText += `\n`;
+	}
+
+	prePalavra.innerText += `comp. médio = ${(somaPalavra / pesoPalavra).toFixed(1)}`;
+
+	// Imprime sobre as frases
+	preFrase.innerText = `comp.\tfreq.\thist. (1:1)\n`;
+
+	for (let i = 1; i < freqFrase.length; i++) {
+		if (freqFrase[i] != undefined) {
+			somaFrase += i * freqFrase[i];
+			pesoFrase+= freqFrase[i];
+			preFrase.innerText += `${i}\t${freqFrase[i]}\t`;
+		} else {
+			preFrase.innerText += `${i}\t0\t`;
+		}
+
+		for (let j = 0; j < freqFrase[i]; j++) {
+			preFrase.innerText += "*";
+		}
+		
+		preFrase.innerText += `\n`;
+	}
+	
+	preFrase.innerText += `comp. médio = ${(somaFrase / pesoFrase).toFixed(1)}`;
+}
+
+function temPontuacao(p) {
+	return p == "," || p == "." || p == ";" || p == ":" || p == "!" || p == "?";
+}
+</script>
